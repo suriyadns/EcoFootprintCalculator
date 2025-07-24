@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFootprint Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F0F8F5; /* Primary Background */
+            color: #37474F; /* Main Text Color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #FFFFFF; /* Card Background */
+            border-radius: 18px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 45px;
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            color: #2E7D32; /* Accent Green */
+            font-size: 2.8em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.15em;
+            line-height: 1.7;
+            color: #546E7A;
+            margin-bottom: 25px;
+        }
+
+        .header small {
+            display: block;
+            margin-top: 15px;
+            font-size: 0.95em;
+            color: #607D8B;
+            line-height: 1.5;
+        }
+
+        .button {
+            background-color: #2E7D32; /* Accent Green */
+            color: white;
+            padding: 16px 35px;
+            border: none;
+            border-radius: 35px;
+            font-size: 1.3em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        .button:hover {
+            background-color: #216D26; /* Darker Accent Green */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.4);
+        }
+
+        .form-section {
+            display: none; /* Hidden by default */
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.15em;
+            font-weight: 600;
+            color: #37474F;
+        }
+
+        .form-group input {
+            width: calc(100% - 24px); /* Account for padding */
+            padding: 14px 12px;
+            border: 1px solid #B0BEC5; /* Subtle Gray */
+            border-radius: 10px;
+            font-size: 1.05em;
+            color: #37474F;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #2E7D32; /* Accent Green on focus */
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+        }
+
+        .calculate-button {
+            margin-top: 20px;
+        }
+
+        .results-section {
+            display: none; /* Hidden by default */
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .results-section h2 {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .footprint-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .assessment-message {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block; /* To make background fit content */
+        }
+
+        .assessment-good {
+            color: #2E7D32; /* Accent Green */
+            background-color: #E8F5E9; /* Light green */
+        }
+
+        .assessment-moderate {
+            color: #FFB300; /* Amber */
+            background-color: #FFFDE7; /* Light yellow */
+        }
+
+        .assessment-high {
+            color: #D32F2F; /* Deep Red */
+            background-color: #FFEBEE; /* Light red */
+        }
+
+        .tips {
+            background-color: #E8F5E9; /* Light green background for tips */
+            border-left: 6px solid #66BB6A; /* Positive Indicator Green */
+            padding: 25px;
+            border-radius: 12px;
+            text-align: left;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .tips h3 {
+            color: #66BB6A; /* Positive Indicator Green */
+            margin-top: 0;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .tips ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tips ul li {
+            margin-bottom: 10px;
+            font-size: 1.05em;
+            line-height: 1.6;
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 1.05em;
+            color: #546E7A;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="initial-screen" id="initialScreen">
+            <div class="header">
+                <h1>EcoFootprint Calculator</h1>
+                <p>
+                    It is a simple program that helps people understand how their daily life activities affect the environment, especially in terms of carbon dioxide (CO₂) emissions.
+                    You just enter some details about:
+                </p>
+                <p>
+                    How much you travel,<br>
+                    How much electricity you use (like with AC),<br>
+                    And how often you eat meat,<br>
+                    …then the program calculates how much CO₂ (pollution) you are causing in a week.
+                </p>
+                <small>
+                    For example:<br>
+                    <strong>🚗 Car</strong> emits more CO₂ than a bike<br>
+                    <strong>❄️ AC</strong> uses electricity, which comes from power plants that emit CO₂<br>
+                    <strong>🥩 Meat</strong> takes more resources and animals produce methane (a strong greenhouse gas)
+                </small>
+            </div>
+            <button class="button" onclick="showCalculator()">Get Started</button>
+        </div>
+
+        <div class="form-section" id="calculatorForm">
+            <form id="carbonForm">
+                <div class="form-group">
+                    <label for="bikeKm">How many kilometers did you ride a bike this week? (km)</label>
+                    <input type="number" id="bikeKm" name="bikeKm" min="0" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="carKm">How many kilometers did you drive a car this week? (km)</label>
+                    <input type="number" id="carKm" name="carKm" min="0" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="acHours">How many hours did you use the AC this week? (hours)</label>
+                    <input type="number" id="acHours" name="acHours" min="0" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="meatMeals">How many meat meals did you eat this week?</label>
+                    <input type="number" id="meatMeals" name="meatMeals" min="0" value="0" required>
+                </div>
+                <button type="submit" class="button calculate-button">Calculate Footprint</button>
+            </form>
+        </div>
+
+        <div class="results-section" id="resultsDisplay">
+            <h2 id="resultHeading"></h2>
+            <p class="footprint-value" id="carbonFootprintResult"></p>
+            <p class="assessment-message" id="assessmentMessage"></p>
+            <div class="tips" id="dynamicTips">
+                <h3>Tips to Reduce Your Impact:</h3>
+                <ul id="tipsList">
+                    </ul>
+            </div>
+            <p class="footer">Thank you for using EcoFootprint Calculator! Please visit again.</p>
+            <button class="button" onclick="resetApp()" style="margin-top: 30px;">Back to Home Page</button>
+        </div>
+    </div>
+
+    <script>
+        // Emission Factors (Illustrative Averages in kg CO2)
+        // These are simplified and approximate. Research for more precise figures if needed.
+        const CO2_PER_KM_BIKE = 0.0;
+        const CO2_PER_KM_CAR = 0.17; // Average car (petrol/diesel) per km
+        const CO2_PER_HOUR_AC = 0.5; // Highly variable, depends on AC efficiency & electricity source
+        const CO2_PER_MEAT_MEAL = 2.0; // Very rough average, varies greatly by meat type
+
+        // Thresholds for assessment (Adjust these based on desired levels for "Good", "Moderate", "High")
+        // These are relative to the *average* weekly individual footprint in India, which is ~1.89 tonnes/year = ~36 kg CO2/week
+        // So, let's set some realistic yet impactful thresholds for *our simplified activities*.
+        const GOOD_FOOTPRINT_THRESHOLD = 10; // kg CO2 per week
+        const MODERATE_FOOTPRINT_THRESHOLD = 30; // kg CO2 per week (above this is considered high)
+
+        function showCalculator() {
+            document.getElementById('initialScreen').style.display = 'none';
+            document.getElementById('calculatorForm').style.display = 'block';
+            // Optional: reset form fields when showing calculator
+            document.getElementById('carbonForm').reset();
+        }
+
+        function resetApp() {
+            document.getElementById('resultsDisplay').style.display = 'none';
+            document.getElementById('calculatorForm').style.display = 'none'; // Hide form too
+            document.getElementById('initialScreen').style.display = 'block'; // Show initial screen
+            document.getElementById('carbonForm').reset(); // Reset form fields
+        }
+
+        document.getElementById('carbonForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const bikeKm = parseFloat(document.getElementById('bikeKm').value) || 0;
+            const carKm = parseFloat(document.getElementById('carKm').value) || 0;
+            const acHours = parseFloat(document.getElementById('acHours').value) || 0;
+            const meatMeals = parseFloat(document.getElementById('meatMeals').value) || 0;
+
+            const carCO2 = carKm * CO2_PER_KM_CAR;
+            const acCO2 = acHours * CO2_PER_HOUR_AC;
+            const meatCO2 = meatMeals * CO2_PER_MEAT_MEAL;
+            const bikeCO2 = bikeKm * CO2_PER_KM_BIKE; // This will always be 0, but included for completeness
+
+            const totalCO2 = carCO2 + acCO2 + meatCO2 + bikeCO2;
+
+            document.getElementById('carbonFootprintResult').innerText = `${totalCO2.toFixed(1)} kg CO₂`;
+
+            const assessmentMessageElement = document.getElementById('assessmentMessage');
+            const resultHeadingElement = document.getElementById('resultHeading');
+            assessmentMessageElement.className = 'assessment-message'; // Reset classes
+
+            if (totalCO2 <= GOOD_FOOTPRINT_THRESHOLD) {
+                resultHeadingElement.innerText = "Fantastic! Your Weekly Carbon Footprint is:";
+                assessmentMessageElement.innerText = "That's a remarkably low footprint! You're already making great choices for the planet. Keep up the excellent work!";
+                assessmentMessageElement.classList.add('assessment-good');
+            } else if (totalCO2 <= MODERATE_FOOTPRINT_THRESHOLD) {
+                resultHeadingElement.innerText = "Good Effort! Your Weekly Carbon Footprint is:";
+                assessmentMessageElement.innerText = "Your footprint is in a moderate range. With a few mindful adjustments, you can make an even bigger positive difference!";
+                assessmentMessageElement.classList.add('assessment-moderate');
+            } else {
+                resultHeadingElement.innerText = "Time for Action! Your Weekly Carbon Footprint is:";
+                assessmentMessageElement.innerText = "Your carbon footprint is on the higher side. Small changes in daily habits can significantly reduce your impact on the environment.";
+                assessmentMessageElement.classList.add('assessment-high');
+            }
+
+            // Generate dynamic tips
+            const tipsList = document.getElementById('tipsList');
+            tipsList.innerHTML = ''; // Clear previous tips
+
+            let specificTips = [];
+            // Prioritize tips based on the highest contributors
+            const contributions = [
+                { activity: 'car', value: carCO2, tip: 'Reduce car travel: Opt for public transport, carpooling, walking, or cycling for short distances.' },
+                { activity: 'AC', value: acCO2, tip: 'Optimize AC use: Use a fan when possible, set AC to a higher temperature, or ensure regular servicing for efficiency.' },
+                { activity: 'meat', value: meatCO2, tip: 'Incorporate more plant-based meals: Try vegetarian or vegan food 2-3 times a week; it significantly lowers your dietary footprint.' }
+            ];
+
+            // Sort by highest contribution
+            contributions.sort((a, b) => b.value - a.value);
+
+            // Add tips for the top 2-3 contributors if they are significant
+            for (let i = 0; i < contributions.length; i++) {
+                if (contributions[i].value > (totalCO2 * 0.15)) { // If it contributes more than 15% of total
+                    specificTips.push(contributions[i].tip);
+                }
+            }
+
+            // Add general tips if specific ones are few or non-existent (e.g., if totalCO2 is very low)
+            if (specificTips.length < 3 || totalCO2 > GOOD_FOOTPRINT_THRESHOLD) {
+                 if (!specificTips.includes('Reduce car travel: Opt for public transport, carpooling, walking, or cycling for short distances.')) {
+                    specificTips.push('Reduce car travel: Opt for public transport, carpooling, walking, or cycling for short distances.');
+                }
+                if (!specificTips.includes('Incorporate more plant-based meals: Try vegetarian or vegan food 2-3 times a week; it significantly lowers your dietary footprint.')) {
+                    specificTips.push('Incorporate more plant-based meals: Try vegetarian or vegan food 2-3 times a week; it significantly lowers your dietary footprint.');
+                }
+                if (!specificTips.includes('Optimize AC use: Use a fan when possible, set AC to a higher temperature, or ensure regular servicing for efficiency.')) {
+                    specificTips.push('Optimize AC use: Use a fan when possible, set AC to a higher temperature, or ensure regular servicing for efficiency.');
+                }
+                specificTips.push('Unplug electronics when not in use to prevent "phantom" energy consumption.');
+                specificTips.push('Opt for locally sourced products to reduce transportation emissions from your food and goods.');
+                specificTips.push('Consider switching to energy-efficient appliances when replacing old ones.');
+            }
+
+            // Remove duplicates and limit to a reasonable number of tips
+            const uniqueTips = [...new Set(specificTips)];
+            uniqueTips.slice(0, 5).forEach(tip => { // Display top 5 relevant unique tips
+                const listItem = document.createElement('li');
+                listItem.innerText = tip;
+                tipsList.appendChild(listItem);
+            });
+
+
+            document.getElementById('calculatorForm').style.display = 'none';
+            document.getElementById('resultsDisplay').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
